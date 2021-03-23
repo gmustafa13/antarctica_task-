@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_UNAME, process.env.DB_PAS, {
-    host: process.env.HOST,
+    host: process.env.DB_HOST,
     dialect: 'mysql',
     operatorAliases: false
 });
