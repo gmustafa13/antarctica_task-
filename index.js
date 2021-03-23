@@ -16,7 +16,7 @@ sequelize
 .catch(err => {
   console.error('Unable to connect to the database:', err);
 });
-if (process.env.ENV === 'development') {
+if (process.env.ENV === 'production') {
   sequelize.sync({force: false}); //deletes all tables then recreates them
 }
 
