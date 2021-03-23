@@ -33,7 +33,9 @@ const userRoute = require('./src/routes/user.model');
 const empRoute = require('./src/routes/employee.model');
 app.use('/user', userRoute);
 app.use('/emp', empRoute);
-
+app.get("/", (req,res) => {
+  res.send("working!!")
+})
 
 app.listen(port, (err, connect) => {
   if (err) {
