@@ -3,17 +3,25 @@ const User = require('../schema/user')
 const {
     TE
 } = require('../utils/util');
-const {uuid}= require('uuidv4')
-const { Op } = require('sequelize');
+const {
+    uuid
+} = require('uuidv4')
+const {
+    Op
+} = require('sequelize');
 
 
 const createEmp = async (userInfo) => {
     userInfo.employeeId = uuid();
-    let empData = await Employee.create(userInfo, {raw:true});
+    let empData = await Employee.create(userInfo, {
+        raw: true
+    });
     if (empData) {
-        await User.update({ employee_id: empData.employeeId }, {
+        await User.update({
+            employee_id: empData.employeeId
+        }, {
             where: {
-            email:userInfo.empEmail
+                email: userInfo.empEmail
             }
         })
         return empData

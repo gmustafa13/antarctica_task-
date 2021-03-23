@@ -1,6 +1,9 @@
 const jwt = require('jsonwebtoken');
 const User = require('../schema/user');
-const { TE, eRes } = require('../utils/util');
+const {
+    TE,
+    eRes
+} = require('../utils/util');
 
 const auth = async (req, res, next) => {
     try {
@@ -8,21 +11,21 @@ const auth = async (req, res, next) => {
         let isVerify = await jwt.verify(req.headers.authorization, process.env.SECRET);
         if (isVerify) {
             if (Date.now() >= isVerify.exp * 1000) {
-                return eRes(res,"token expired");
+                return eRes(res, "token expired");
             }
             req.data = isVerify.data;
             next();
-            
+
         } else {
-            eRes(res,"Token is Not Valid")
+            eRes(res, "Token is Not Valid")
         }
-        
+
     } catch (error) {
-        eRes(res,"Token is Not Valid")
+        eRes(res, "Token is Not Valid")
     }
 }
 
 
 module.exports = {
-auth
+    auth
 }

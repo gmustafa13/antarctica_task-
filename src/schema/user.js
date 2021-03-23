@@ -24,7 +24,11 @@ const User = sequelize.define(
             type: Sequelize.STRING
         },
         employee_id: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            references: {
+                model: Employee, // 'Actors' would also work
+                key: 'employeeId'
+            }
         },
         id: {
             allowNull: false,
@@ -58,9 +62,9 @@ User.beforeSave(async (user) => {
         TE(error.message)
     }
 })
-User.associate = function () {
-    Employee.hasMany(User, { foreignKey: 'employee_id' ,as:'employees'});
-    return User
-};
+User.belongsTo(Employee, {
+    foreignKey: 'employee_id',
+    as: 'employees'
+});
 
 module.exports = User;

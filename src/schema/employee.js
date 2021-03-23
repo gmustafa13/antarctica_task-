@@ -15,9 +15,9 @@ const Employee = sequelize.define('Employee', {
     employeeId: {
         type: Sequelize.STRING,
         primaryKey: true,
-        allowNull:false
+        allowNull: false
     },
-    userId: {
+    empEmail: {
         type: Sequelize.STRING,
         unique: true
     }
@@ -25,8 +25,4 @@ const Employee = sequelize.define('Employee', {
     timestamps: true,
 })
 
-Employee.associate = function () {
-    User.belongsTo(Employee, { cascade: true, foreignKey: 'employee_id' ,as:'users'});
-    // return Employee
-};
 module.exports = Employee

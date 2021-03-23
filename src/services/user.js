@@ -4,8 +4,13 @@ const {
 } = require('../utils/util');
 const bycrpt = require('bcrypt')
 const jwt = require('jsonwebtoken');
-const { Op, Model } = require('sequelize');
-const { uuid } = require('uuidv4')
+const {
+    Op,
+    Model
+} = require('sequelize');
+const {
+    uuid
+} = require('uuidv4')
 const Employee = require('../schema/employee')
 
 const createUser = async (userInfo) => {
@@ -26,9 +31,9 @@ const logIn = async (userInfo) => {
 
         let isPasswordCorrect = await bycrpt.compare(userInfo.password, userData.password);
         if (isPasswordCorrect) {
-            return await generateToken(userData);       
+            return await generateToken(userData);
         } else {
-          return TE("in correct password")
+            return TE("in correct password")
         }
 
     } else {
@@ -41,11 +46,10 @@ const generateToken = async (userInfo) => {
     }, process.env.SECRET, {
         expiresIn: '1h'
     });
-    
+
 }
 const getAllUser = async (userInfo) => {
-    let query = {
-    };
+    let query = {};
     query.where = {};
 
     //pagination
@@ -59,7 +63,7 @@ const getAllUser = async (userInfo) => {
         query.order = [
             [`${userInfo.sortBy}`, `${userInfo.sortOrder}`]
         ]
-       
+
     } else if (userInfo.sortBy) {
         query.order = [
             [`${userInfo.sortBy}`, 'DESC']
@@ -67,17 +71,44 @@ const getAllUser = async (userInfo) => {
     }
     // filter
     if (userInfo.search) {
-        query.where ={
-            [Op.or]: [{ firstName: { [Op.like]: `%${userInfo.search}%` } }, { lastName: {[Op.like]: `%${userInfo.search}%` }}]
+        query.where = {
+            [Op.or]: [{
+                    firstName: {
+                        [Op.like]: `%${userInfo.search}%`
+                    }
+                }, {
+                    lastName: {
+                        [Op.like]: `%${userInfo.search}%`
+                    }
+                }, {
+                    email: {
+                        [Op.like]: `%${userInfo.search}%`
+                    }
+                },
+                {
+                    ['$employees.organizationName$']: {
+                        [Op.like]: `%${userInfo.search}%`
+                    }
+                },
+                {
+                    ['$employees.id$']: {
+                        [Op.like]: `%${userInfo.search}%`
+                    }
+                }
+            ]
         }
     }
-    query.include =[Employee]
+    query.include = [{
+        model: Employee,
+        as: 'employees',
+        required: true
+    }]
     let data = await User.findAndCountAll(query);
-    return await pagination(data,page,limit,data.count)
+    return await pagination(data, page, limit, data.count)
 }
-const pagination = async (data,page,limit,totalCount) => {
+const pagination = async (data, page, limit, totalCount) => {
     let obj = {}
-    obj.result = data.rows?data.rows:data;
+    obj.result = data.rows ? data.rows : data;
     obj.limit = limit;
     obj.page = page;
     obj.totalCount = totalCount;
